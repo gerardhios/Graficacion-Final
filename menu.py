@@ -64,8 +64,8 @@ def get_main_opts(opt:int = None):
   m_opts = {
       1: {
           'title':'Funciones',
-          'options': ['Abrir imagenes', 'Guardar la informacion obtenida'],
-          'functions': [open_img, save_info]
+          'options': ['Abrir imagenes'],
+          'functions': [open_img]
       },
       2: {
           'title':'Codigos de cadena',
