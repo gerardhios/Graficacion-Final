@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from skimage import io
 from skimage.color import rgb2gray, rgba2rgb
+import os
 
 # list of coordinates of the neigborhood
 def neighborhoodCoordinates(row, col, size, img_shape):
@@ -417,7 +418,11 @@ def f4(imgData:list, ret:bool = False):
                 img_f4[row, col] = np.array([img_f[i][row, col], img_f[i][row, col]])
             # Apply the freeman 4 chain code algorithm
             if img_f4.max() == 1:
-                chc_f4.append(freeman4ChainCode(img_f4))
+                try:
+                    cf4 = freeman4ChainCode(img_f4)
+                    chc_f4.append(cf4)
+                except Exception:
+                    chc_f4.append([])
 
     else:
         img = io.imread(imgData[1])
@@ -433,18 +438,23 @@ def f4(imgData:list, ret:bool = False):
 
     if ret:
         return chc_f4
+    menu({
+        "neighboor": 4,
+        "name": "F4",
+        "chain_code": chc_f4,
+        "data": imgData,
+    })
+    # if len(imgData) == 3:
+    #     print(f"Codigos de cadena F4 de la imagen {imgData[0]}")
+    #     for i, chc in enumerate(chc_f4):
+    #         print(f"Capa {i+1}")
+    #         print(code_chain_to_str(chc))
+    #     input("Presione enter para continuar...")
 
-    if len(imgData) == 3:
-        print(f"Codigos de cadena F4 de la imagen {imgData[0]}")
-        for i, chc in enumerate(chc_f4):
-            print(f"Capa {i+1}")
-            print(code_chain_to_str(chc))
-        input("Presione enter para continuar...")
-
-    else:
-        print(f"Codigo de cadena F4 de la imagen {imgData[0]}")
-        print(code_chain_to_str(chc_f4))
-        input("Presione enter para continuar...")
+    # else:
+    #     print(f"Codigo de cadena F4 de la imagen {imgData[0]}")
+    #     print(code_chain_to_str(chc_f4))
+    #     input("Presione enter para continuar...")
 
 def f8(imgData:list, ret:bool = False, coords:bool = False):
     if len(imgData) == 3:
@@ -471,44 +481,74 @@ def f8(imgData:list, ret:bool = False, coords:bool = False):
         if coords:
             return chc_f8, coords_b
         return chc_f8
-    
-    print(f"Codigo de cadena F8 de la imagen {imgData[0]}")
-    if len(imgData) == 3:
-        for i, chc in enumerate(chc_f8):
-            print(f"Capa {i+1}")
-            show_f_chain_code(img_f[i], chc, coords_b[i])
-            print(code_chain_to_str(chc))
-            if i != len(chc_f8) - 1:
-                input("Presione enter para continuar...")
+    menu({
+        "neighboor": 8,
+        "name": "F8",
+        "chain_code": chc_f8,
+        "coords": coords_b,
+        "data": imgData,
+    })
+    # print(f"Codigo de cadena F8 de la imagen {imgData[0]}")
+    # if len(imgData) == 3:
+    #     for i, chc in enumerate(chc_f8):
+    #         print(f"Capa {i+1}")
+    #         show_f_chain_code(img_f[i], chc, coords_b[i])
+    #         print(code_chain_to_str(chc))
+    #         if i != len(chc_f8) - 1:
+    #             input("Presione enter para continuar...")
         
-    else:
-        show_f_chain_code(img_f, chc_f8, coords_b)
-        print(code_chain_to_str(chc_f8))
-    input("Presione enter para continuar...")
+    # else:
+    #     show_f_chain_code(img_f, chc_f8, coords_b)
+    #     print(code_chain_to_str(chc_f8))
+    # input("Presione enter para continuar...")
 
 def vcc(imgData:list):
+    vcc = []
     f4_chain = f4(imgData, True)
-    print(f"Codigo de cadena VCC de la imagen {imgData[0]}")
     if type(f4_chain[0]) == list:
         for i, chc in enumerate(f4_chain):
-            print(f"Capa {i+1}")
-            print(code_chain_to_str(VCC(chc)))
+            vcc.append(VCC(chc))
     else:
         vcc = VCC(f4_chain)
-        print(code_chain_to_str(vcc))
-    input("Presione enter para continuar...")
+    menu({
+        "neighboor": 4,
+        "name": "VCC",
+        "chain_code": vcc,
+        "data": imgData,
+    })
+    # print(f"Codigo de cadena VCC de la imagen {imgData[0]}")
+    # if type(f4_chain[0]) == list:
+    #     for i, chc in enumerate(f4_chain):
+    #         print(f"Capa {i+1}")
+    #         print(code_chain_to_str(VCC(chc)))
+    # else:
+    #     vcc = VCC(f4_chain)
+    #     print(code_chain_to_str(vcc))
+    # input("Presione enter para continuar...")
 
 def threeOT(imgData:list):
+    threeOT = []
     f4_chain = f4(imgData, True)
-    print(f"Codigo de cadena 3OT de la imagen {imgData[0]}")
     if type(f4_chain[0]) == list:
         for i, chc in enumerate(f4_chain):
-            print(f"Capa {i+1}")
-            print(code_chain_to_str(c3OT(chc)))
+            threeOT.append(c3OT(chc))
     else:
         threeOT = c3OT(f4_chain)
-        print(code_chain_to_str(threeOT))
-    input("Presione enter para continuar...")
+    menu({
+        "neighboor": 4,
+        "name": "3OT",
+        "chain_code": threeOT,
+        "data": imgData,
+    })
+    # print(f"Codigo de cadena 3OT de la imagen {imgData[0]}")
+    # if type(f4_chain[0]) == list:
+    #     for i, chc in enumerate(f4_chain):
+    #         print(f"Capa {i+1}")
+    #         print(code_chain_to_str(c3OT(chc)))
+    # else:
+    #     threeOT = c3OT(f4_chain)
+    #     print(code_chain_to_str(threeOT))
+    # input("Presione enter para continuar...")
 
 def af8(imgData:list, ret:bool = False, coords:bool = False):
     f8_chain, border_coords = f8(imgData, True, True)
@@ -523,16 +563,73 @@ def af8(imgData:list, ret:bool = False, coords:bool = False):
             return af8, border_coords
         return af8
 
-    print(f"Codigo de cadena AF8 de la imagen {imgData[0]}")
-    if type(f8_chain[0]) == list:
-        for i, chc in enumerate(af8):
+    menu({
+        "neighboor": 8,
+        "name": "AF8",
+        "chain_code": af8,
+        "coords": border_coords,
+        "data": imgData,
+    })
+    # print(f"Codigo de cadena AF8 de la imagen {imgData[0]}")
+    # if type(f8_chain[0]) == list:
+    #     for i, chc in enumerate(af8):
+    #         print(f"Capa {i+1}")
+    #         print(code_chain_to_str(chc))
+    #         show_f_chain_code(preprocessing_image(imgData[2][i], dil=False), chc, border_coords[i])
+    #         if i != len(f8_chain) - 1:
+    #             input("Presione enter para continuar...")
+    # else:
+    #     i = io.imread(imgData[1])
+    #     show_f_chain_code(preprocessing_image(i), af8, border_coords)
+    #     print(code_chain_to_str(af8))
+    # input("Presione enter para continuar...")
+    
+def clean_console():
+  os.system('cls' if os.name == 'nt' else 'clear')
+
+def save_result(data):
+    pass
+
+def see_result(data):
+    chain_c = data["chain_code"]
+    imgData = data["data"]
+    if len(imgData) == 2:
+        print(f"Codigo de cadena {data['name']} de la imagen {imgData[0]}")
+    if len(imgData) == 3:
+        print(f"Codigos de cadena {data['name']} de la imagen {imgData[0]}")
+        img = imgData[2]
+        for i, chc in enumerate(chain_c):
             print(f"Capa {i+1}")
             print(code_chain_to_str(chc))
-            show_f_chain_code(preprocessing_image(imgData[2][i], dil=False), chc, border_coords[i])
-            if i != len(f8_chain) - 1:
-                input("Presione enter para continuar...")
+            if data["neighboor"] == 8:
+                show_f_chain_code(img[i], chc, data["coords"][i])
+                if i != len(chain_c) - 1:
+                    input("Presione enter para continuar...")
     else:
-        i = io.imread(imgData[1])
-        show_f_chain_code(preprocessing_image(i), af8, border_coords)
-        print(code_chain_to_str(af8))
+        if data["neighboor"] == 8:
+            im = io.imread(imgData[1])
+            show_f_chain_code(preprocessing_image(im, dil=True), chain_c, data["coords"])
+        print(code_chain_to_str(chain_c))
     input("Presione enter para continuar...")
+
+
+
+def menu(data):
+    clean_console()
+    options = ["Visualizar resultado", "Guardar resultado"]
+    functions = [see_result, save_result]
+    while True:
+        print("Menu")
+        for i, opt in enumerate(options):
+            print(f"{i+1}) {opt}")
+        print("S) Salir")
+        select = input().lower()
+        try:
+            check = int(select)
+            clean_console()
+            functions[check-1](data)
+            clean_console()
+        except Exception:
+            if select == 's':
+                clean_console()
+                return
