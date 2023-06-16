@@ -1,19 +1,3 @@
-# Para los devs
-Cree una estructura general para el menu y deben de considerar ciertas cosas para implementar la parte que les toco
-
-En el archivo menu.py deben de agregar las funciones que creen para la parte que les toco y las opciones como quieran que aparezcan en el menu, todo esto en el diccionario "m_opts" que esta en la función "get_main_opts"
-
-Por ejemplo a mi me toco los codigos de cadena que estan en el archivo chainCodes.py
-
-Y los agregue de esta forma
-
-![Screenshot Tuto Menu 1](https://github.com/gerardhios/Graficacion/blob/main/assets/menuoptstuto1.png)
-
-Tambien es importante que en las funciones que hagan tomen en cuenta que debe llegar el parametro "imgData" que es una lista donde la primer instancia es el nombre de la imagen que van a tomar y la segunda instancia es el path donde esta guardada la imagen
-
-Por ejemplo en el codigo de cadena f4 recibo el parametro de esta forma
-
-![Screenshot Tuto Menu 2](https://github.com/gerardhios/Graficacion/blob/main/assets/menuoptstuto2.png)
 # Graficación
 
 Repositorio para almacenar el codigo del proyecto final de la materia de graficación
