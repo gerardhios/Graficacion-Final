@@ -129,7 +129,3 @@ def open_3d_img(imgData:list, ret:bool = False):
     #                 msp.add_point((i, j, k))
     # # Save the dfx file
     # doc.saveas(f'{file.name.split(".")[0]}.dxf')
-    
-
-def save_info():
-    print("Para guardar la informacion")

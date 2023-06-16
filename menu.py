@@ -1,5 +1,5 @@
 import os
-from functions import open_img, save_info, open_3d_img
+from functions import open_img, open_3d_img
 from chainCodes import f4, f8, vcc, threeOT, af8
 from pointCloud import *
 from eulerFunctions import caracteristicaEuler, calcularHoyos, calcularPixeles, calcularTetraPixeles, calcularVertices
