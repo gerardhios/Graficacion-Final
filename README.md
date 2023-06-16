@@ -37,7 +37,7 @@ En la barra de busqueda escribir "python" y dar clic en el boton de instalar en 
 ![Screenshot Tuto Extension 2](https://github.com/gerardhios/Graficacion/blob/main/assets/extensionstuto2.png)
 ## Obtener el código
 
-Para poder correr los programas, se debe seguir la siguiente serie de instrucciones. Es importante que tengas el simbolo del sistema o CMD abierto
+Para poder correr los programas, se debe seguir la siguiente serie de instrucciones. Es importante que tengas el simbolo del sistema o CMD abierto. Este se puede abrir dando clic en el boton de Windows del teclado y tecleando "cmd"
 
 Ir a la carpeta de descargas
 
