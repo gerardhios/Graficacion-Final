@@ -72,10 +72,10 @@ def get_main_opts(opt:int = None):
           'options': ['F4', 'F8', 'VCC', '3OT', 'AF8'],
           'functions': [f4, f8, vcc, threeOT, af8]
       },
-      3: {
+      3:  {
           'title':'Nubes de puntos',
-          'options': ['GLC'],
-          'functions': [freeContextGrammar]
+          'options': ['GLC', 'Puntos de Quiebre', 'ISE'],
+          'functions': [freeContextGrammar, puntosQuiebre, integralSquareError]
       },
       4: {
           'title':'Euler',

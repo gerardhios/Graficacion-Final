@@ -1,12 +1,8 @@
 from chainCodes import af8
 import imageio
 import matplotlib.pyplot as plt
-from skimage import feature, measure
-import cv2
-import numpy as np
-from PIL import Image
-from scipy import ndimage, misc
-import itertools
+from skimage import feature
+from scipy.spatial.distance import euclidean
 
 def convertir_a_letras(numeros):
     letras = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
@@ -15,7 +11,7 @@ def convertir_a_letras(numeros):
         if numero >= 0 and numero < len(letras):
             resultado.append(letras[numero])
         else:
-            resultado.append(str(numero))  # Si el número no tiene una letra correspondiente, se agrega como cadena de texto
+            resultado.append(str(numero)) 
     return resultado
 
 def obtenerPuntosQuiebre(lista_letras):
@@ -59,13 +55,10 @@ def reducirCadena(lista):
     return resultado
 
 def obtener_borde_imagen(ruta_imagen, lista_letras):
-    ## Leer la imagen en escala de grises
     imagen = imageio.imread(ruta_imagen, as_gray=True)
 
-    # Aplicar el detector de bordes Canny
     borde = feature.canny(imagen, sigma=1.0)
 
-    # Mostrar el borde
     for i in range(borde.shape[0]):
         for j in range(borde.shape[1]):
             if borde[i, j] != 0:
@@ -77,70 +70,98 @@ def obtener_borde_imagen(ruta_imagen, lista_letras):
     plt.axis("off")
     plt.show()
 
-def printBreakPoints(imagen_path, lista):
-    imagen = imageio.imread(imagen_path, as_gray=True)
-
+def printBreakPoints(coordenadas, lista, ret:bool = False):
     
-    # Binarizar la imagen (convertir a blanco y negro)
-    umbral = 0.5  # Umbral para la binarización
-    imagen_binaria = imagen > umbral
-
-    # Encontrar los contornos utilizando find_contours
-    contornos = measure.find_contours(imagen_binaria, 0.5)
-    
-    # Crear una figura y ejes para mostrar la imagen y los contornos
     fig, ax = plt.subplots()
     
-    
-    
-    # Dibujar los contornos
-    for i, contorno in enumerate(contornos):
-        coordenadas_x = contorno[:, 1]
-        coordenadas_y = contorno[:, 0]
+    distancia = []
+    primero = False
+    for i, coord in enumerate(coordenadas):
+        x = coord[0]
+        y = coord[1]
         
-        # Distribuir la serie de datos en la lista mayor
-        lista = list(itertools.islice(itertools.cycle(lista), len(contorno)))
-        for j in range(len(contorno)):
-            x = coordenadas_x[j]
-            y = coordenadas_y[j]
+        if (lista[i] == 'x'):
+            ax.scatter(x, y, s=50, color='red')
+            if (primero == False):
+                x_anterior = x
+                y_anterior = y
 
-            try:
-                if (lista[j] == 'x'):
-                    ax.scatter(x, y, s=50, color='red')
-            except:
-                continue
-        
-        ax.plot(contorno[:, 1], contorno[:, 0], linewidth=2, color='blue')
-        print(i)
+                primero = True
+            else:
+                distancia.append(euclidean((x_anterior, y_anterior), (x, y)))
+                x_anterior = x
+                y_anterior = y
+        else:
+            ax.scatter(x, y, s=10, color='black')
 
-    # Configurar los ejes
+    if ret:
+        return distancia
+
     ax.set_aspect('equal')
     ax.axis('off')
     plt.show()
 
+    return distancia
 
-def freeContextGrammar(imageData:list):
-    # Border coords son las coordenas del contorno como se siguio
+def freeContextGrammar(imageData:list, ret:bool = False):
     code, border_coords = af8(imageData, ret=True, coords=True)
 
     code = convertir_a_letras(code)
 
     grammar_complete = obtenerPuntosQuiebre(code)
+    
+    if ret:
+        return border_coords, grammar_complete
 
     grammar_reduced = reducirCadena(grammar_complete)
+    
     print(grammar_reduced)
 
+    input("Presione 'Enter' para continuar")
 
-    #sacar el borde para graficar con plt
+def puntosQuiebre(imageData:list, ret:bool = False):
+    border_coords, grammar_complete = freeContextGrammar(imageData, True)
+    
+    if ret == False:
+        print(grammar_complete)
+        preguntar_imprimir(grammar_complete, imageData[0])
+    
     try:
-        contorno = printBreakPoints(imageData[1], grammar_complete)
-        #borde_imagen = printBreakPoints(imageData[1], grammar_complete)   
+        distancia = printBreakPoints(border_coords, grammar_complete, ret)
     except Exception as e:
         print("Ocurrió un error:", e)
         input("Presiona Enter para continuar...")
 
+    if ret:
+        return distancia
+    input("Presione 'Enter' para continuar")
 
+def integralSquareError(imageData:list):
+    distancia = puntosQuiebre(imageData, True)
 
-    #grammar_complete obtener las coordenadas de las x 
+    ISE = 0
+    for dist in distancia:
+        ISE += dist ** 2
 
-    #graficar todo :)
+    print(f'ISE = {ISE}')
+    input("Presione 'Enter' para continuar")
+
+def preguntar_imprimir(datos, nombre): 
+    print("¿Deseas guardar los datos calculados?")
+    print("Tome en cuenta que al seleccionar sí, se guardarán todos los atributos de la imagen seleccionada anteriormente ")
+    print("Estos datos son: Cadenas (gramática libre de contexto completa) ")
+    opcion = input("1. Si\n2. No\n")
+    if(opcion == "1"):
+        resultados = open("resultados_obtenidos.txt", "a")
+        formato_de_resultado = f'''
+        =================================================================================================================
+        =================================== RESULTADOS DE IMAGEN {nombre} ===============================================
+        =================================================================================================================
+        \t\t\t\t\t Cadenas (gramatica libre de contexto completa): {datos}
+        =================================================================================================================\n\n
+        '''
+        resultados.write(formato_de_resultado)
+        input("Los datos han sido guardados en resultados_obtenidos.txt, presione una tecla para continuar ")
+    else:
+        return
+    pass
